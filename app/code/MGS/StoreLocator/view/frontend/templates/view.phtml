@@ -1,0 +1,266 @@
+<?php $themeHelper = $this->helper('MGS\StoreLocator\Helper\Data'); ?>
+<?php if ($themeHelper->getStoreConfig('locator/general/store_api_key')) {
+    $apikey = $themeHelper->getStoreConfig('locator/general/store_api_key');
+} else {
+    $apikey = 'AIzaSyD11c9ZFjYyFvKmbp2eKkpRuiqkjkAUIG0';
+}
+?>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $apikey ?>&libraries=places" async defer></script>
+<?php $_storeView = $this->getStoreView(); ?>
+<div class="view-builders">
+    <div class="canvas">
+        <div class="page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <header class="page-header">
+                            <h1 class="title"><?php echo $this->escapeHtml($_storeView->getName()) ?> <br><small><b><?php echo $this->escapeHtml($_storeView->getSubtitle()) ?></b></small></h1>
+                            <h2 class="subtitle">Home Builder in <?php echo $this->escapeHtml(ucwords($_storeView->getCity())) . ', ' . $this->escapeHtml(ucwords($_storeView->getState())) ?></h2>
+                        </header>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="header-buttons"> <a class="btn btn-block-xs btn-wide btn-primary" href="javascript:anim_scroll('contact');"><i class="fa fa-fw fa-envelope"></i> Contact</a> </p>
+                    </div>
+                </div>
+            </div>
+            <article class="page-content">
+                <div class="container">
+                    <?php if ($imageUrl = $_storeView->getImageUrl()) : ?>
+                        <div class="img-studio">
+                            <p><img src="<?php echo $imageUrl ?>" alt="<?php echo $_storeView->getName() ?>" style="width:100%"></p>
+                        </div>
+                    <?php endif ?>
+                </div>
+                <div class="container">
+                    <div class="row row-md-flex-center">
+                        <div class="col-sm-12 col-md-5">
+                            <h4 class="text-uppercase clearfix">Contact Information</h4>
+                            <div class="overflow-hidden">
+                                <h6 class="text-uppercase">Address</h6>
+                                <p><?php if (!empty($_storeView->getStoreTitle())) {
+                                        echo ucwords($_storeView->getStoreTitle());
+                                    } else {
+                                    ?>Wausau Homes <?php echo ucwords($_storeView->getCity());
+                                                    } ?>
+                                    <br>
+                                    <?php echo $_storeView->getStreetAddress() ?>
+                                    <br>
+                                    <?php echo ucwords($_storeView->getCity()) ?>, <?php echo ucwords($_storeView->getState()) ?> <?php echo $_storeView->getZipcode() ?>
+                                    <br>
+                                    <a class="btn btn-text visitclick-blue" href="<?php echo $_storeView->getGoogleMapUrl(); ?>" target="_blank">Get Directions</a>
+                                </p>
+                                <h6 class="text-uppercase">Contact</h6>
+                                <p> <?php echo $this->escapeHtml($_storeView->getContactName()) ?>
+                                    <?php if ($_storeView->getPhoneNumber()) : ?><br> <?php echo $this->escapeHtml($_storeView->getPhoneNumber()) ?> <?php endif; ?>
+                                    <?php if ($_storeView->getEmail()) : ?><br> <a href="mailto:<?php echo $this->escapeHtml($_storeView->getEmail()) ?>"><span><?php echo $this->escapeHtml($_storeView->getEmail()) ?></span> </a><?php endif; ?>
+                                    <?php if ($_storeView->getFax()) : ?><br> <?php echo $this->escapeHtml($_storeView->getFax()) ?> <?php endif; ?>
+                                    <br> <span class="external-links">
+                                        <?php if (!empty($_storeView->getWebsite())) { ?>
+                                            <a class="website" href="<?php echo $_storeView->getWebsite(); ?>" target="_blank">&nbsp;<i class="fa fa-link"></i>&nbsp;</a>
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getFacebookUrl())) { ?>
+                                            <a class="facebook" href="<?php echo $_storeView->getFacebookUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-facebook">&nbsp;</i></a> 
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getInstagramUrl())) { ?>
+                                            <a class="instagram" href="<?php echo $_storeView->getInstagramUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-instagram">&nbsp;</i></a> 
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getYoutubeUrl())) { ?>
+                                            <a class="youtube" href="<?php echo $_storeView->getYoutubeUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-youtube">&nbsp;</i></a>
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getTwitterUrl())) { ?>
+                                            <a class="twitter" href="<?php echo $_storeView->getTwitterUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-twitter">&nbsp;</i></a>
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getLinkedinUrl())) { ?>
+                                            <a class="linkedin" href="<?php echo $_storeView->getLinkedinUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-linkedin">&nbsp;</i></a>
+                                        <?php } ?>
+                                        <?php if(!empty($_storeView->getHouzzUrl())) { ?>
+                                            <a class="houzz" href="<?php echo $_storeView->getHouzzUrl(); ?>" target="_blank">&nbsp;<i class="fa fa-fw fa-houzz">&nbsp;</i></a>
+                                        <?php } ?>    
+                                    </span> </p>
+                                <?php if ($_storeView->getTradingHours()) : ?>
+                                    <h6 class="text-uppercase">Hours</h6>
+                                    <div class="content">
+                                        <?php echo $this->getTradingHours(); ?>
+                                    </div>
+                                <?php endif ?>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-7 section-sm">
+                            <div class="map-canvas">
+                                <div id="map-detail" class="map js-map"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($_storeView->getGalleryImages()) : ?>
+                    <div class="section-sm">
+                        <div class="bg-well section-sm">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <?php echo $this->getGalleryImages(); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif ?>
+                <?php if ($_storeView->getDescription()) : ?>
+                    <div class="container">
+                        <div class="row">
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <h4 class="text-uppercase">About Our Design Studio</h4>
+                                    <?php echo $this->getDescription(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif ?>
+                <?php if ($_storeView->getAreaServe()) : ?>
+                    <div class="container">
+                        <div class="row">
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <h4 class="text-uppercase">About The Area We Serve</h4>
+                                    <?php echo $this->getAreaServe(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif ?>
+                <?php if ($_storeView->getOurPricing()) : ?>
+                    <div class="container">
+                        <div class="row">
+                            <div class="content">
+                                <div class="col-sm-12">
+                                    <h4 class="text-uppercase">OUR PRICING</h4>
+                                    <?php echo $this->getOurPricing(); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif ?>
+                <?php if ($_storeView->getTestimonials()) : ?>
+                    <div class="container">
+                        <?php echo $this->getTestimonials(); ?>
+                    </div>
+                <?php endif ?>
+                <div id="contact" class="section-sm">
+                <?php 
+                       //get which form is enabled, Control, version A, Ab testing
+                        $helper = $this->helper('Fexle\ContactForms\Helper\getScopeconfig');
+                        $activeform = $helper->whichEnable();
+
+                        if($activeform == 0){
+                            //Ab testing is on in configuration
+                            $cookie_name = "form_assigned";
+                            $cookie = isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : $helper->getcookieInSession();
+                            if(isset($cookie)) {
+                                if($cookie == 'control') { 
+                                    //Control form cookie found in storage
+                                    echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/control-form-find-builder.phtml")->toHtml();
+                            
+                                }elseif($cookie == 'version-a'){ 
+                                    //Version A form cookie found in 
+                                    echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a-find-builder.phtml")->toHtml();
+                                }elseif($cookie == 'version-a1'){ 
+                                    //Version A form cookie found in 
+                                    echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a1-find-builder.phtml")->toHtml();
+                                }elseif($cookie == 'version-b'){ 
+                                    //Version A form cookie found in 
+                                    echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a1-find-builder.phtml")->toHtml();
+                                }
+                            }                            
+                             
+                        }elseif($activeform == 1){ 
+                            //Control form is on in configuration
+                            echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/control-form-find-builder.phtml")->toHtml();
+
+                        }elseif($activeform == 2){
+                            //Version A form is on in configuration
+                            echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a-find-builder.phtml")->toHtml();
+                        }elseif($activeform == 3){
+                            //Version A form is on in configuration
+                            echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a1-find-builder.phtml")->toHtml();
+                        }elseif($activeform == 4){
+                            //Version A form is on in configuration
+                            echo $this->getLayout()->createBlock("Magento\Framework\View\Element\Template")->setTemplate("Magento_Theme::contectFormHtml/version-a1-find-builder.phtml")->toHtml();
+                        }
+                    ?>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+<?php
+//Get store google map related information
+$storeName = $_storeView->getName();
+$storeLat = $_storeView->getLat();
+$storeLong = $_storeView->getLng();
+$storeRadius = $this->getRadius($_storeView);
+?>
+<?php if ($storeLat && $storeLong) : ?>
+    <script>
+        require(['jquery', 'MGS_StoreLocator/js/storelocator'], function($) {
+            $(window).on('load', function() {
+                var storeLat = <?php echo $storeLat; ?>;
+                var storeLong = <?php echo $storeLong; ?>;
+                var storeRadius = <?php echo $storeRadius; ?>;
+                var scroll = "javascript:anim_scroll('contact')";
+                var storeInfoText = '<div class="map-short-info"><h6><?php echo $storeName; ?> <br><small><b><?php echo $_storeView->getSubtitle(); ?></b></small></h6><p><?php echo $_storeView->getStreetAddress() ?> <br><?php echo $_storeView->getCity() ?> <?php echo $_storeView->getState() ?> <?php echo $_storeView->getZipcode() ?> <?php echo $_storeView->getCountry() ?></p><p>Phone: <a href="tel:<?php echo $_storeView->getPhoneNumber() ?>"><?php echo $_storeView->getPhoneNumber() ?></a></p> <a class="btn btn-xs btn-primary visitclick-white" href="<?php echo $_storeView->getGoogleMapUrl(); ?>" target="_blank">Get Directions</a> <a class="btn btn-xs btn-primary-o visitclick-blue" href="'+scroll+'">Contact <i class="fa fa-angle-double-right"></i></a>';
+                var googleMapDivId = 'map-detail';
+                google.maps.event.addDomListener(window, 'load', initializeMap(storeLat, storeLong, storeRadius, storeInfoText, googleMapDivId));
+		//google.maps.event.addEventListener(window, 'load', initializeMap(storeLat, storeLong, storeRadius, storeInfoText, googleMapDivId));
+            });
+        });
+    </script>
+<?php endif ?>
+<script>   
+    require([
+        'jquery',
+        'jquery/jquery.cookie'
+    ], function ($) {
+        $(document).ready(function () {
+            var utm_s = parseGET('utm_source');
+            var utm_m = parseGET('utm_medium');
+            var utm_c = parseGET('utm_campaign');
+            var utm_t = parseGET('utm_term');
+            var utm_cn = parseGET('utm_content');
+
+            var cookieFlag = false;
+
+            if (utm_s && utm_m && utm_c && utm_t && utm_cn) {
+                cookieFlag = true;
+
+                var utm_cokkie = { utm_s, utm_m, utm_c, utm_t, utm_cn };
+                var check_cookie = $.cookie('utm_cokkie'); // Get Cookie Value
+                var date = new Date();
+                var minutes = 60;
+                date.setTime(date.getTime() + (minutes * 60 * 1000));
+                $.cookie('utm_cokkie', '', { path: '/', expires: -1 }); // Expire Cookie
+                $.cookie('utm_cokkie', JSON.stringify(utm_cokkie), {expires: date}); // Set Cookie Expiry Time
+
+                document.getElementById('builder_store_utm_source').value = utm_s;
+                document.getElementById('builder_store_utm_medium').value = utm_m;
+                document.getElementById('builder_store_utm_campaign').value = utm_c;
+                document.getElementById('builder_store_utm_term').value = utm_t;
+                document.getElementById('builder_store_utm_content').value = utm_cn;
+            }
+
+            var cookieExist = $.cookie('utm_cokkie') ? JSON.parse($.cookie('utm_cokkie')) : '';
+
+            if (cookieExist && cookieFlag === false) {
+                document.getElementById('builder_store_utm_source').value = cookieExist.utm_s;
+                document.getElementById('builder_store_utm_medium').value = cookieExist.utm_m;
+                document.getElementById('builder_store_utm_campaign').value = cookieExist.utm_c;
+                document.getElementById('builder_store_utm_term').value = cookieExist.utm_t;
+                document.getElementById('builder_store_utm_content').value = cookieExist.utm_cn;
+            }
+        });
+    }); 
+</script>

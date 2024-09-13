@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @var \Statlab\SDS\Block\Display $block
+ */
+
+$data = 'empty';
+// Get all PDFS
+$pdfs = $block->getALLpdf();
+
+// Grab the product SKU
+$myBlock = \Magento\Framework\App\ObjectManager::getInstance()->get('Statlab\SDS\Block\Display');
+if ($currentProduct = $myBlock->getCurrentProduct()) { $data = $currentProduct->getSku(); }
+
+if(!empty($data)) { 
+	$foundSumfin = false;
+	while($foundSumfin == false) {
+		reset($pdfs);
+		foreach($pdfs as $item) {
+			if(strcasecmp($item->getPart(),$data) == 0) {
+				$foundSumfin = true; ?>
+				
+				<div class="row" id="sds_and_ifu_block">
+					<?php if($item->getSds() != '') { ?>
+						<div class="col-sm-12">
+							<a class="action primary" href="<?= $block->getBaseUrl() ?>pdfs/sds/<?= $item->getSds(); ?>" target="_blank" style="width:100%; text-align:center; color:#e40086; background-color:#FFF;">DOWNLOAD SDS</a>
+						</div>
+					<?php } ?>
+					<?php if($item->getIfu() != '') { ?>
+						<div class="col-sm-12">
+							<a class="action primary" href="<?= $block->getBaseUrl() ?>pdfs/ifu/<?php echo $item->getIfu(); ?>" target="_blank" style="width:100%; text-align:center; color:#e40086; background-color:#FFF;">DOWNLOAD IFU</a>
+						</div>
+					<?php } ?>
+				</div>
+				
+		<?php } } // End foreach
+		if(strlen($data) > 20 || strlen($data) < 5) { $foundSumfin = true; }
+		$data = substr($data, 0, -1);
+		
+	}
+} ?>

@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @var \Statlab\SDS\Block\Display $block
+ */
+$num = 0;
+?>
+
+<h1 style="color:#e40086;">SDS and IFU</h1>
+<h4>Note: You can use ctrl+f to search for items by name or item number. Test</h4>
+<table width="100%">
+	<tr style="background:#e40086; color:#fff;">
+		<td width="20%"><h3>Item Num</h3></td>
+		<td width="60%"><h3>Part Name</h3></td>
+		<td width="10%"><h3>SDS</h3></td>
+		<td width="10%"><h3>IFU</h3></td>
+	</tr>
+<?php foreach($block->getSDSandIFUCollection() as $key=>$item) {
+	if($item->getSds() != '' || $item->getIfu() != '') { $num++; ?>
+		<tr<?php if($num % 2 == 0) { echo ' style="background: #eee;"'; } ?>>
+			<td><?php echo $item->getPart(); ?></td>
+			<td><?php echo $item->getDescription(); ?></td>
+			<td><?php if($item->getSds() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/sds/<?php echo $item->getSds(); ?>" target="_blank">SDS</a><?php } ?></td>
+			<td><?php if($item->getIfu() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/ifu/<?php echo $item->getIfu(); ?>" target="_blank">IFU</a><?php } ?></td>
+		</tr>
+<?php } } ?>
+	
+</table>

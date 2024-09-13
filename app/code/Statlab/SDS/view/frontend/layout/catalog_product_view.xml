@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.info.extrahint">
+            <block class="Statlab\SDS\Block\Display" name="sdsifu" template="Statlab_SDS::links.phtml" before="-">
+                <arguments>
+                    <argument translate="true" name="title" xsi:type="string">SDS and IFU</argument>
+                    <argument name="priority" xsi:type="string">30</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

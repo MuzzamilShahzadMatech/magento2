@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @var \Statlab\SDS\Block\Display $block
+ */
+$num = 0;
+$refined = false;
+$data = $this->getRequest()->getParam('sds_search','');
+if(!empty($data)) {$data=trim($data);}
+$pdfs = $block->getALLpdf();
+$numFound = 0;
+$numPasses = 0;
+?>
+
+<table width="100%">
+	<tr style="background:#e40086; color:#fff;">
+		<td width="20%"><h3>Item Num</h3></td>
+		<td width="60%"><h3>Part Name</h3></td>
+		<td width="10%"><h3>SDS</h3></td>
+		<td width="10%"><h3>IFU</h3></td>
+	</tr>
+<?php if(empty($data)) { ?>
+<?php foreach($pdfs as $item) {
+	if($item->getSds() != '' || $item->getIfu() != '') { $num++; $numFound++; ?>
+		<tr<?php if($num % 2 == 0) { echo ' style="background: #eee;"'; } ?>>
+			<td><?php echo $item->getPart(); ?></td>
+			<td><?php echo $item->getDescription(); ?></td>
+			<td><?php if($item->getSds() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/sds/<?php echo $item->getSds(); ?>" target="_blank">SDS</a><?php } ?></td>
+			<td><?php if($item->getIfu() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/ifu/<?php echo $item->getIfu(); ?>" target="_blank">IFU</a><?php } ?></td>
+		</tr>
+<?php } } ?>
+<?php } else { 
+// Here comes the fun bitz	
+$foundSumfin = false;
+while($foundSumfin == false) {
+	reset($pdfs);
+	foreach($pdfs as $item) {
+		if(str_contains(strtolower($item->getPart()),strtolower($data)) || (str_contains(strtolower($item->getDescription()),strtolower($data)) && $numPasses == 0 )) {
+			$foundSumfin = true;
+			if($item->getSds() != '' || $item->getIfu() != '') { $num++; $numFound++; ?>
+				<tr<?php if($num % 2 == 0) { echo ' style="background: #eee;"'; } ?>>
+					<td><?php echo $item->getPart(); ?></td>
+					<td><?php echo $item->getDescription(); ?></td>
+					<td><?php if($item->getSds() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/sds/<?php echo $item->getSds(); ?>" target="_blank">SDS</a><?php } ?></td>
+					<td><?php if($item->getIfu() != '') { ?><a href="<?= $block->getBaseUrl() ?>pdfs/ifu/<?php echo $item->getIfu(); ?>" target="_blank">IFU</a><?php } ?></td>
+				</tr>
+		<?php } } 
+	} 
+	if(strlen($data) > 20 || strlen($data) < 5) { $foundSumfin = true; }
+	$data = substr($data, 0, -1);
+	$numPasses++;
+	}
+} ?>
+</table>
+
+<?php if($numFound > 0 && $numPasses > 1) { echo '<h3 style="margin-top:50px; text-align:center;">Exact match not found. Showing possible matches.</h3>'; } ?>
+<?php if($numFound < 1) { echo '<h1 style="margin-top:50px; text-align:center;">This is embarrassing — we can\'t find what you\'re looking for.</h1><h3>Please try adding a space in the product name or search by item number. For example, if you tried "HighDef", search instead for "High Def". If you still can\'t locate what you\'re looking for, please contact Customer Service at 1-800-442-3573.</h3>'; } ?>
